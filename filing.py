@@ -69,3 +69,9 @@ def add_filing_year(filings):
     for i in filings:
         i['year'] = get_year_from_title(i['title'])
     return filings
+
+def get_customized_filings(filings):
+    new_filings = get_summary_filings(filings)
+    new_filings = get_efiled_filings(new_filings)
+    new_filings = add_filing_year(new_filings)
+    return new_filings
