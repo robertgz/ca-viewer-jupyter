@@ -57,7 +57,12 @@ def get_efiled_filings(filings):
 # An example input string: 'FPPC Form 460 (1/1/2023 - 9/23/2023)'
 # The resulting year: '2023'
 def get_year_from_title(title):
-    return title.partition(' (')[2].partition('-')[0].strip().split('/')[2]
+    try:
+        year = title.partition(' (')[2].partition('-')[0].strip().split('/')[2]
+        return year
+    except Exception as e:
+        print(f'Title not able to be parsed: {title}')
+        return ''
 
 # Add a year field to each filing based on the title field
 def add_filing_year(filings):
