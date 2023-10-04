@@ -22,7 +22,7 @@ def download_all_filings_gen_func(agencyShortcut):
     while getNextPage:
         json = get_filings(agencyShortcut, pageNumber)
         if (len(json['filings']) < 1):
-            return;
+            return
 
         yield json['filings']
 
