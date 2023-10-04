@@ -1,2 +1,2 @@
-requests=2.31.0
-ipywidgets=8.0.4
+requests==2.31.0
+ipywidgets==8.0.4
