@@ -1,12 +1,4 @@
-import requests
-
-# Request the agency list from NetFile
-def download_agencies():
-    agencies_url = 'https://www.netfile.com/Connect2/api/public/campaign/agencies.json'
-    response = requests.get(agencies_url)
-
-    print(f'AGENCY: Request url: {response.url}')
-    return response.json()
+from agency_download import download_agencies
 
 # Add isCounty flag to each agency
 def detect_counties(agencies):
