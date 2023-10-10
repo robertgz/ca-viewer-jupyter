@@ -1,7 +1,7 @@
 import requests
 
 # function to request a page of filings from NetFile
-def get_filings(agencyShortcut, page=0):
+def get_filings(agencyShortcut: str, page=0):
     filing_url = 'https://www.netfile.com/Connect2/api/public/list/filing'
     payload = {
         "AID": agencyShortcut,
@@ -17,7 +17,7 @@ def get_filings(agencyShortcut, page=0):
     return response.json()
 
 # generator function to get each page of filings for an agency
-def download_all_filings_gen_func(agencyShortcut):
+def download_all_filings_gen_func(agencyShortcut: str):
     pageNumber = 0
     getNextPage = True
 
@@ -32,7 +32,7 @@ def download_all_filings_gen_func(agencyShortcut):
         getNextPage = json['totalMatchingPages'] > pageNumber
 
 # function to get all pages of filings for an agency
-def get_all_agency_filings(agencyShortcut):
+def get_all_agency_filings(agencyShortcut: str):
     filing_list = []
     try:
         for filings in download_all_filings_gen_func(agencyShortcut):

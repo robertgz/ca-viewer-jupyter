@@ -1,3 +1,36 @@
+import pandas as pd
+from typing import TypeAlias
+
+_filing_list = []
+
+FilingDownload: TypeAlias = dict[any]
+
+def get_unique_filings(input_filings: list(FilingDownload)):
+    return pd.DataFrame(input_filings).drop_duplicates().to_dict('records')
+
+def get_filter_filings(input_filings: list(FilingDownload)):
+    global _filing_list
+    ids = list(map(lambda x: x['id'], _filing_list))
+    new_filing_list = filter(lambda x: x['id'] not in ids, input_filings)
+    return list(new_filing_list)
+
+def add_filings(agency_shortcut: str, input_filings: list(FilingDownload)):
+    unique_filings = get_unique_filings(input_filings)
+
+    global _filing_list
+    filings_to_add = get_filter_filings(unique_filings)
+    
+    filings_with_fields = _add_fields(agency_shortcut, filings_to_add)
+    _filing_list += filings_with_fields
+
+    return filings_with_fields
+
+# Add a year field to each filing based on the title field
+def _add_fields(agency_shortcut, filings):
+    for i in filings:
+        i['year'] = get_year_from_title(i['title'])
+        i['agencyShortcut'] = agency_shortcut
+    return filings
 
 # Filter by 'FPPC Form 460 Recipient Committee Campaign Statement' filings
 # The 460 filings should be the only forms that have summaries
@@ -28,6 +61,7 @@ def get_year_from_title(title):
         return ''
 
 # Add a year field to each filing based on the title field
+# @deprecated('use add_fields')
 def add_filing_year(filings):
     for i in filings:
         i['year'] = get_year_from_title(i['title'])
