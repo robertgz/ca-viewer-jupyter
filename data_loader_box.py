@@ -2,7 +2,7 @@ import ipywidgets as widgets
 from ipywidgets import HBox, VBox
 
 from agency import get_agency_list
-from filing import get_years_from_filings
+from filing import get_years_from_filings, add_all_agency_filings, get_filings
 from filing_download import get_all_agency_filings
 from summary import get_all_agency_year_summaries
 
@@ -65,7 +65,8 @@ class DataLoaderBox:
         agency_shortcut = self.agency_select_drop_down.value
         print('on_load_filings_button_clicked 2')
 
-        self.filing_list = get_all_agency_filings(agency_shortcut)
+        add_all_agency_filings(agency_shortcut)
+        self.filing_list = get_filings(agency_shortcut)
         print(f'Filings downloaded: {len(self.filing_list)}')
         
         if len(self.filing_list) < 1:
