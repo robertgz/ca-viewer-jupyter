@@ -7,6 +7,9 @@ def get_filings(agencyShortcut: str, page=0):
         "AID": agencyShortcut,
         "Application": "Campaign",
         "CurrentPageIndex": page,
+        # Form 30 is for FPPC 460 
+        # FPPC 460 forms should be the only forms that have summaries
+        "Form": 30,
         'PageSize': '1000',
         "format": "json",
     }
