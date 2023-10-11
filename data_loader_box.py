@@ -2,7 +2,7 @@ import ipywidgets as widgets
 from ipywidgets import HBox, VBox
 
 from agency import get_agency_list
-from filing import get_years_from_filings, add_all_agency_filings, get_filings
+from filing import get_years_from_filings, add_all_agency_filings, get_filings, get_years
 from filing_download import get_all_agency_filings
 from summary import get_all_agency_year_summaries
 
@@ -56,6 +56,7 @@ class DataLoaderBox:
 
     def on_agency_select_changed(self, change):
         self.load_filings_button.disabled = (change.new == 'none')
+        self.update_years(change.new)
 
     def on_load_filings_button_clicked(self, b):
         print('on_load_filings_button_clicked 1')
@@ -72,12 +73,21 @@ class DataLoaderBox:
         if len(self.filing_list) < 1:
             return
         
-        years = get_years_from_filings(self.filing_list)
+        self.update_years(agency_shortcut)
+        
+    def update_years(self, agency_shortcut):
+        if (agency_shortcut == 'none'):
+            return
+        years = get_years(agency_shortcut)
         years = sorted(list(set(years)), reverse=True)
-
         self.filing_years_select_drop_down.disabled = len(years) < 1
-        self.filing_years_select_drop_down.options = ['select'] + years
-        self.filing_years_select_drop_down.value = 'select'
+
+        if (len(years) > 0):
+            self.filing_years_select_drop_down.options = ['select'] + years
+            self.filing_years_select_drop_down.value = 'select'
+        else:
+            self.filing_years_select_drop_down.options = []
+            self.filing_years_select_drop_down.value = None
 
     def on_filing_years_select_changed(self, change):
         self.load_agency_summaries_button.disabled = (change.new == 'select')
