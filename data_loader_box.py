@@ -2,8 +2,7 @@ import ipywidgets as widgets
 from ipywidgets import HBox, VBox
 
 from agency import get_agency_list
-from filing import get_years_from_filings, add_all_agency_filings, get_filings, get_years
-from filing_download import get_all_agency_filings
+from filing import add_all_agency_filings, get_filings, get_years
 from summary import get_all_agency_year_summaries
 
 
