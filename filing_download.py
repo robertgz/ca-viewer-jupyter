@@ -32,6 +32,7 @@ def download_all_filings_gen_func(agencyShortcut: str):
         getNextPage = json['totalMatchingPages'] > pageNumber
 
 # function to get all pages of filings for an agency
+# @deprecated('use filings.add_all_agency_filings')
 def get_all_agency_filings(agencyShortcut: str):
     filing_list = []
     try:

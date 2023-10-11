@@ -1,5 +1,7 @@
+from requests import exceptions
 import pandas as pd
 from typing import TypeAlias
+from filing_download import download_all_filings_gen_func
 
 _filing_list = []
 
@@ -11,8 +13,8 @@ def get_unique_filings(input_filings: list(FilingDownload)):
 def get_filter_filings(input_filings: list(FilingDownload)):
     global _filing_list
     ids = list(map(lambda x: x['id'], _filing_list))
-    new_filing_list = filter(lambda x: x['id'] not in ids, input_filings)
-    return list(new_filing_list)
+    new_filing_list = list(filter(lambda x: x['id'] not in ids, input_filings))
+    return new_filing_list
 
 def add_filings(agency_shortcut: str, input_filings: list(FilingDownload)):
     unique_filings = get_unique_filings(input_filings)
@@ -24,6 +26,24 @@ def add_filings(agency_shortcut: str, input_filings: list(FilingDownload)):
     _filing_list += filings_with_fields
 
     return filings_with_fields
+
+def add_all_agency_filings(agencyShortcut: str):
+    try:
+        for filings in download_all_filings_gen_func(agencyShortcut):
+            add_filings(agencyShortcut, filings)
+
+    except exceptions.Timeout as e:
+        print('FILING:: Warning slow response from provider. \nThis issue is usually temporary. Try again in a few minutes. ')
+
+def get_filings(agencyShortcut: str):
+    global _filing_list
+    filings = list(filter(lambda x: x['agencyShortcut'] == agencyShortcut, _filing_list))
+    return filings
+
+def get_years(agencyShortcut: str):
+    agency_filings = get_filings(agencyShortcut)
+    years = list(map(lambda x: x['year'], agency_filings))
+    return years
 
 # Add a year field to each filing based on the title field
 def _add_fields(agency_shortcut, filings):
