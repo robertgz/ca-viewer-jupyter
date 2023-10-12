@@ -49,6 +49,16 @@ def get_years(agencyShortcut: str):
     years = list(map(lambda x: x['year'], agency_filings))
     return years
 
+def get_filers(agency_shortcut: str):
+    global _filing_list
+    filings = list(filter(lambda x: x['agencyShortcut'] == agency_shortcut, _filing_list))
+
+    filers = []
+    for i in filings:
+        filers.append({"filerName": i['filerName'], "filerLocalId": i['filerLocalId']})
+
+    return get_unique_list(filers)
+
 # Add a year field to each filing based on the title field
 def _add_fields(agency_shortcut, filings):
     for i in filings:
