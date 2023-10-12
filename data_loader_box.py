@@ -27,13 +27,19 @@ class DataLoaderBox:
             description="Load Summaries",
             disabled=True
         )
+        self.filer_select_drop_down = widgets.Dropdown(
+            description='Filer',
+            disabled=True,
+        )
 
         row_a = HBox([self.load_agencies_button])
         row_b = HBox(
             [self.agency_select_drop_down, self.load_filings_button])
         row_c = HBox(
             [self.filing_years_select_drop_down, self.load_agency_summaries_button])
-        self.layout = VBox([row_a, row_b, row_c])
+        row_d = HBox(
+            [self.filer_select_drop_down])
+        self.layout = VBox([row_a, row_b, row_c, row_d])
 
         self.add_events()
         self.update_agency_select_drop_down()
@@ -60,12 +66,14 @@ class DataLoaderBox:
     def on_agency_select_changed(self, change):
         self.load_filings_button.disabled = (change.new == 'none')
         self.update_year_select_drop_down(change.new)
+        self.update_filer_select_drop_down(change.new)
 
     def on_load_filings_button_clicked(self, b):
         print('on_load_filings_button_clicked 1')
         agency_shortcut = self.agency_select_drop_down.value
         add_all_agency_filings(agency_shortcut)
         self.update_year_select_drop_down(agency_shortcut)
+        self.update_filer_select_drop_down(agency_shortcut)
         
     def update_year_select_drop_down(self, agency_shortcut):
         if (agency_shortcut == 'none'):
@@ -80,6 +88,26 @@ class DataLoaderBox:
         else:
             self.filing_years_select_drop_down.options = []
             self.filing_years_select_drop_down.value = None
+
+    def update_filer_select_drop_down(self, agency_shortcut):
+        if (agency_shortcut == 'none'):
+            return
+        filers = get_filers(agency_shortcut)
+        self.filer_select_drop_down.disabled = len(filers) < 1
+    
+        sorted_filers = sorted(filers, key=lambda x: x['filerName'])
+
+        filer_tups = [('Select Filer/Committee', 'none')]
+
+        for filer_dict in sorted_filers:
+            filer_tups.append((filer_dict['filerName'], filer_dict['filerLocalId']))
+
+        if (len(filers) > 0):
+            self.filer_select_drop_down.options = filer_tups
+            self.filer_select_drop_down.value = 'none'
+        else:
+            self.filer_select_drop_down.options = []
+            self.filer_select_drop_down.value = None
 
     def on_filing_years_select_changed(self, change):
         self.load_agency_summaries_button.disabled = (change.new == 'select')
