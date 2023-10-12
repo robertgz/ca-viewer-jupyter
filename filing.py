@@ -52,7 +52,7 @@ def get_years(agencyShortcut: str):
 # Add a year field to each filing based on the title field
 def _add_fields(agency_shortcut, filings):
     for i in filings:
-        i['year'] = get_year_from_title(i['title'])
+        i['year'] = _get_year_from_filing(i)
         i['agencyShortcut'] = agency_shortcut
     return filings
 
@@ -82,6 +82,14 @@ def get_year_from_title(title):
         return year
     except Exception as e:
         print(f'Title not able to be parsed: {title}')
+        return ''
+
+def _get_year_from_filing(filing):
+    try:
+        year = filing['title'].partition(' (')[2].partition('-')[0].strip().split('/')[2]
+        return year
+    except Exception as e:
+        print(f'Title not able to be parsed: {filing["title"]}, id: {filing["id"]}')
         return ''
 
 # Add a year field to each filing based on the title field
