@@ -16,11 +16,15 @@ def get_filter_filings(input_filings: list(FilingDownload)):
     new_filing_list = list(filter(lambda x: x['id'] not in ids, input_filings))
     return new_filing_list
 
+def filter_out_non_e_filed(input_filings: list(FilingDownload)):
+    return list(filter(lambda x: x['isEfiled'] == True, input_filings))
+
 def add_filings(agency_shortcut: str, input_filings: list(FilingDownload)):
     unique_filings = get_unique_filings(input_filings)
 
     global _filing_list
     filings_to_add = get_filter_filings(unique_filings)
+    filings_to_add = filter_out_non_e_filed(filings_to_add)
     
     filings_with_fields = _add_fields(agency_shortcut, filings_to_add)
     _filing_list += filings_with_fields
