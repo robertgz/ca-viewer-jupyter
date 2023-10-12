@@ -36,7 +36,7 @@ def add_all_agency_filings(agencyShortcut: str):
         for filings in download_all_filings_gen_func(agencyShortcut):
             add_filings(agencyShortcut, filings)
 
-    except exceptions.Timeout as e:
+    except (exceptions.Timeout, ConnectionError) as e:
         print('FILING:: Warning slow response from provider. \nThis issue is usually temporary. Try again in a few minutes. ')
 
 def get_filings(agencyShortcut: str):
