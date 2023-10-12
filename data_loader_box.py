@@ -2,8 +2,8 @@ import ipywidgets as widgets
 from ipywidgets import HBox, VBox
 
 from agency import add_all_agencies, get_all
-from filing import add_all_agency_filings, get_filings, get_years
-from summary import get_all_agency_year_summaries
+from filing import add_all_agency_filings, get_years
+from summary import add_all_agency_year_summaries
 
 
 class DataLoaderBox:
@@ -90,9 +90,7 @@ class DataLoaderBox:
         self.summary_list = []
         agency_shortcut = self.agency_select_drop_down.value
         filing_year = self.filing_years_select_drop_down.value
-        summaries_response_json = get_all_agency_year_summaries(agency_shortcut, filing_year)
-        print(f'Number of summaries: {len(summaries_response_json)}, for year {filing_year}')
-        self.summary_list = summaries_response_json
+        add_all_agency_year_summaries(agency_shortcut, filing_year)
 
     def add_events(self):
         self.load_agencies_button.on_click(self.on_load_agencies_button_clicked)
