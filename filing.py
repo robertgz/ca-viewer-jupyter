@@ -7,8 +7,8 @@ _filing_list = []
 
 FilingDownload: TypeAlias = dict[any]
 
-def get_unique_filings(input_filings: list(FilingDownload)):
-    return pd.DataFrame(input_filings).drop_duplicates().to_dict('records')
+def get_unique_list(input_list):
+    return pd.DataFrame(input_list).drop_duplicates().to_dict('records')
 
 def get_filter_filings(input_filings: list(FilingDownload)):
     global _filing_list
@@ -20,7 +20,7 @@ def filter_out_non_e_filed(input_filings: list(FilingDownload)):
     return list(filter(lambda x: x['isEfiled'] == True, input_filings))
 
 def add_filings(agency_shortcut: str, input_filings: list(FilingDownload)):
-    unique_filings = get_unique_filings(input_filings)
+    unique_filings = get_unique_list(input_filings)
 
     global _filing_list
     filings_to_add = get_filter_filings(unique_filings)
