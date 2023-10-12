@@ -59,26 +59,15 @@ class DataLoaderBox:
 
     def on_agency_select_changed(self, change):
         self.load_filings_button.disabled = (change.new == 'none')
-        self.update_years(change.new)
+        self.update_year_select_drop_down(change.new)
 
     def on_load_filings_button_clicked(self, b):
         print('on_load_filings_button_clicked 1')
-
-        self.filing_list = []
-
         agency_shortcut = self.agency_select_drop_down.value
-        print('on_load_filings_button_clicked 2')
-
         add_all_agency_filings(agency_shortcut)
-        self.filing_list = get_filings(agency_shortcut)
-        print(f'Filings downloaded: {len(self.filing_list)}')
+        self.update_year_select_drop_down(agency_shortcut)
         
-        if len(self.filing_list) < 1:
-            return
-        
-        self.update_years(agency_shortcut)
-        
-    def update_years(self, agency_shortcut):
+    def update_year_select_drop_down(self, agency_shortcut):
         if (agency_shortcut == 'none'):
             return
         years = get_years(agency_shortcut)
