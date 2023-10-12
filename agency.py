@@ -35,6 +35,11 @@ def _remove_extra_agencies(agencies):
     result = filter(lambda temp: temp['shortcut'] not in skip_list, agencies)
     return list(result)
 
+def add_all_agencies():
+    agency_response = download_agencies()
+    agencies = agency_response['agencies']
+    add(agencies)
+
 def get_agency_list():
     if len(_agency_list)  < 1:
         agency_response = download_agencies()

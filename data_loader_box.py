@@ -1,7 +1,7 @@
 import ipywidgets as widgets
 from ipywidgets import HBox, VBox
 
-from agency import get_agency_list
+from agency import add_all_agencies, get_all
 from filing import add_all_agency_filings, get_filings, get_years
 from summary import get_all_agency_year_summaries
 
@@ -36,20 +36,24 @@ class DataLoaderBox:
         self.layout = VBox([row_a, row_b, row_c])
 
         self.add_events()
+        self.update_agency_select_drop_down()
 
     def on_load_agencies_button_clicked(self, b):
         print('on_load_agencies_button_clicked 1')
-        self.agencies = get_agency_list()
-        print('on_load_agencies_button_clicked 2')
+        add_all_agencies()
         self.update_agency_select_drop_down()
-   
+      
     def update_agency_select_drop_down(self):
+        agencies = get_all()
+        if len(agencies) < 1:
+            return
+
         agency_tups = [('Select City/County', 'none')]
 
-        for agency_dict in self.agencies:
+        for agency_dict in agencies:
             agency_tups.append((agency_dict['name'], agency_dict['shortcut']))
 
-        self.agency_select_drop_down.disabled = len(self.agencies) < 1
+        self.agency_select_drop_down.disabled = len(agencies) < 1
         self.agency_select_drop_down.options = agency_tups
         self.agency_select_drop_down.value = 'none'
 
