@@ -2,8 +2,9 @@ import ipywidgets as widgets
 from ipywidgets import HBox, VBox
 
 from agency import add_all_agencies, get_all
-from filing import add_all_agency_filings, get_years
+from filing import add_all_agency_filings, get_years, get_filers
 from summary import add_all_agency_year_summaries
+from transaction import add_all_filer_filer_id_transactions
 
 
 class DataLoaderBox:
@@ -31,6 +32,10 @@ class DataLoaderBox:
             description='Filer',
             disabled=True,
         )
+        self.load_filer_transactions_button = widgets.Button(
+            description="Load Transactions",
+            disabled=True
+        )
 
         row_a = HBox([self.load_agencies_button])
         row_b = HBox(
@@ -38,7 +43,7 @@ class DataLoaderBox:
         row_c = HBox(
             [self.filing_years_select_drop_down, self.load_agency_summaries_button])
         row_d = HBox(
-            [self.filer_select_drop_down])
+            [self.filer_select_drop_down, self.load_filer_transactions_button])
         self.layout = VBox([row_a, row_b, row_c, row_d])
 
         self.add_events()
@@ -112,6 +117,9 @@ class DataLoaderBox:
     def on_filing_years_select_changed(self, change):
         self.load_agency_summaries_button.disabled = (change.new == 'select')
 
+    def on_filer_select_changed(self, change):
+        self.load_filer_transactions_button.disabled = (change.new == 'none')
+
     def on_load_agency_summaries_button_clicked(self, b):
         print('on_load_agency_summaries_button_clicked 1')
 
@@ -120,9 +128,18 @@ class DataLoaderBox:
         filing_year = self.filing_years_select_drop_down.value
         add_all_agency_year_summaries(agency_shortcut, filing_year)
 
+    def on_load_filer_transactions_button_clicked(self, b):
+        print('on_load_filer_transactions_button_clicked 1')
+        agency_shortcut = self.agency_select_drop_down.value
+        filer_local_id = self.filer_select_drop_down.value
+        print('filer_local_id', filer_local_id)
+        add_all_filer_filer_id_transactions(agency_shortcut, filer_local_id)
+
     def add_events(self):
         self.load_agencies_button.on_click(self.on_load_agencies_button_clicked)
         self.agency_select_drop_down.observe(self.on_agency_select_changed, 'value')
         self.load_filings_button.on_click(self.on_load_filings_button_clicked)
         self.filing_years_select_drop_down.observe(self.on_filing_years_select_changed, 'value')
         self.load_agency_summaries_button.on_click(self.on_load_agency_summaries_button_clicked)
+        self.filer_select_drop_down.observe(self.on_filer_select_changed, 'value')
+        self.load_filer_transactions_button.on_click(self.on_load_filer_transactions_button_clicked)
