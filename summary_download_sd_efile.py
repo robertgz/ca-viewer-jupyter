@@ -28,3 +28,41 @@ def download_xlsx_to_file(url: str):
     with open(filename, 'wb') as file:
         file.write(response.content)
     return filename
+
+## Years
+import os
+_years_download = []
+
+def init_years(agency_shortcut = 'CSD_EFILE'):
+    year_limit = 2000
+    global _years_download
+
+    current_year = datetime.datetime.today().strftime('%Y')
+    year = int(current_year)
+
+    year_found = True
+    while year_found and year > year_limit:
+        json_response = _request_download_url(year)
+        if 'success' in json_response:
+            _years_download.append(
+                {
+                    'agency_shortcut': agency_shortcut,
+                    'year': str(year),
+                    'filename': _get_filename(json_response['data']),
+                    'url': json_response['data'],
+                }
+            )
+        else:
+            year_found = False
+        year -= 1
+
+def _get_years_by_agency(agency_shortcut):
+    global _years_download
+    filtered = list(
+        filter(lambda x: x['agency_shortcut'] == agency_shortcut, _years_download))
+    return filtered
+
+def get_downloadable_years(agency_shortcut = 'CSD_EFILE'):
+    agency_years_download = _get_years_by_agency(agency_shortcut)
+    years = list(map(lambda x: x['year'], agency_years_download))
+    return years
