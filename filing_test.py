@@ -9,7 +9,7 @@ def test_get_unique_filings_1():
         { 'id': 'test_4', 'filerName': 'Filer name 4' },
         { 'id': 'test_4', 'filerName': 'Filer name 4' },
     ]
-    response_filings = filing.get_unique_filings(test_filings)
+    response_filings = filing.get_unique_list(test_filings)
     assert len(response_filings) == 4
 
 def test_get_filter_filings_1():
@@ -58,19 +58,19 @@ def test_add_filings_1():
 
     test_filings1 = [
         {'id': 'test_1', 'filerName': 'Filer name 1',
-            'title': 'FPPC Form 460 (10/18/2020 - 12/31/2020)'},
+            'title': 'FPPC Form 460 (10/18/2020 - 12/31/2020)', 'isEfiled': True},
     ]
 
     test_filings2 = [
         {'id': 'test_2', 'filerName': 'Filer name 2',
-            'title': 'FPPC Form 460 (10/18/2020 - 12/31/2020)'},
+            'title': 'FPPC Form 460 (10/18/2020 - 12/31/2020)', 'isEfiled': True},
         {'id': 'test_3', 'filerName': 'Filer name 3',
-            'title': 'FPPC Form 460 (10/18/2020 - 12/31/2020)'},
+            'title': 'FPPC Form 460 (10/18/2020 - 12/31/2020)', 'isEfiled': True},
     ]
 
     test_filings3 = [
         {'id': 'test_3', 'filerName': 'Filer name 3',
-            'title': 'FPPC Form 460 (10/18/2020 - 12/31/2020)'},
+            'title': 'FPPC Form 460 (10/18/2020 - 12/31/2020)', 'isEfiled': True},
     ]
 
     filing.add_filings(agency_shortcut, test_filings1)
