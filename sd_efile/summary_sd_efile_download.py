@@ -1,3 +1,4 @@
+import os
 import requests
 import datetime
 
@@ -90,5 +91,9 @@ def conditionally_download(year_item):
     found_locally = os.path.isfile(filepath)
 
     if not found_locally:
+        path = year_item['path']
+        if not os.path.exists(path):
+            os.makedirs(path)
         download_xlsx_year_to_file(filepath, year_item['url'])
+
     return filepath

@@ -1,6 +1,6 @@
 
 import pandas as pd
-import summary_sd_efile_download as sdefile
+import sd_efile.summary_sd_efile_download as sdefile
 
 summary_sheet_name = 'F460-Summary'
 
