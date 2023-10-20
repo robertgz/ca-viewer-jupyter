@@ -1,38 +1,12 @@
 import os
-import requests
 import datetime
 
-## Workbook download for SD eFile
+import download as sd_download
 
-def _request_download_url(year: str,  most_recent = True):
-    bulk_export_url = 'https://efile.sandiego.gov/api/v1/public/campaign-bulk-export-url'
-
-    payload = {
-        "year": year,
-        "most_recent_only": most_recent,
-    }
-    # print(f'EFILE: Requesting download url: {bulk_export_url}, with params: {payload}')
-    response = requests.get(bulk_export_url, params=payload, timeout=20)
-    # print(f'FILING: Requested url: {response.url}')
-    return response.json()
-
-def get_download_url(year: str,  most_recent = True):
-    json_response = _request_download_url(year, most_recent)
-    return json_response['data']
+_year_files_list = []
 
 def _get_filename(url: str):
     return url.split('/')[-1]
-
-def download_xlsx_year_to_file(filepath: str, url: str):
-    response = requests.get(url, timeout=20)
-    with open(filepath, 'wb') as file:
-        file.write(response.content)
-    return filepath
-
-## Years
-import os
-
-_year_files_list = []
 
 def init_years(agency_shortcut = 'CSD_EFILE'):
     year_limit = 2000
@@ -46,7 +20,7 @@ def init_years(agency_shortcut = 'CSD_EFILE'):
 
     year_found = True
     while year_found and year > year_limit:
-        json_response = _request_download_url(year)
+        json_response = sd_download.request_download_url(year)
 
         if 'success' in json_response:
             dirname = os.path.dirname(__file__)
@@ -94,6 +68,6 @@ def conditionally_download(year_item):
         path = year_item['path']
         if not os.path.exists(path):
             os.makedirs(path)
-        download_xlsx_year_to_file(filepath, year_item['url'])
+        sd_download.download_xlsx_year_to_file(filepath, year_item['url'])
 
     return filepath
