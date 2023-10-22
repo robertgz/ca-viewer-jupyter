@@ -1,7 +1,7 @@
 from requests import exceptions
 import pandas as pd
 from typing import TypeAlias
-from netfile.filing.download import download_all_filings_gen_func
+from src.netfile.filing.download import download_all_filings_gen_func
 
 _filing_list = []
 
