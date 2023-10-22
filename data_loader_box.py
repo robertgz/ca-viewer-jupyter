@@ -1,7 +1,7 @@
 import ipywidgets as widgets
 from ipywidgets import HBox, VBox
 
-from netfile.agency.agencies import Agencies
+from src.netfile.agency.agencies import Agencies
 from filing import add_all_agency_filings, get_years, get_filers
 from summary import add_all_agency_year_summaries
 from transaction import add_all_filer_filer_id_transactions
