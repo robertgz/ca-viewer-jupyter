@@ -2,7 +2,7 @@ import ipywidgets as widgets
 from ipywidgets import HBox, VBox
 
 from src.netfile.agency.agencies import Agencies
-from filing import add_all_agency_filings, get_years, get_filers
+from src.netfile.filing.filings import Filings
 from summary import add_all_agency_year_summaries
 from transaction import add_all_filer_filer_id_transactions
 
@@ -47,6 +47,7 @@ class DataLoaderBox:
         self.layout = VBox([row_a, row_b, row_c, row_d])
 
         self.agencies = Agencies()
+        self.filings = Filings()
 
         self.add_events()
         self.update_agency_select_drop_down()
@@ -78,14 +79,14 @@ class DataLoaderBox:
     def on_load_filings_button_clicked(self, b):
         print('on_load_filings_button_clicked 1')
         agency_shortcut = self.agency_select_drop_down.value
-        add_all_agency_filings(agency_shortcut)
+        self.filings.add_all_agency_filings(agency_shortcut)
         self.update_year_select_drop_down(agency_shortcut)
         self.update_filer_select_drop_down(agency_shortcut)
         
     def update_year_select_drop_down(self, agency_shortcut):
         if (agency_shortcut == 'none'):
             return
-        years = get_years(agency_shortcut)
+        years = self.filings.get_years(agency_shortcut)
         years = sorted(list(set(years)), reverse=True)
         self.filing_years_select_drop_down.disabled = len(years) < 1
 
@@ -99,7 +100,7 @@ class DataLoaderBox:
     def update_filer_select_drop_down(self, agency_shortcut):
         if (agency_shortcut == 'none'):
             return
-        filers = get_filers(agency_shortcut)
+        filers = self.filings.get_filers(agency_shortcut)
         self.filer_select_drop_down.disabled = len(filers) < 1
     
         sorted_filers = sorted(filers, key=lambda x: x['filerName'])
