@@ -1,7 +1,7 @@
 import ipywidgets as widgets
 from ipywidgets import HBox, VBox
 
-from agency import add_all_agencies, get_all
+from netfile.agency.agencies import Agencies
 from filing import add_all_agency_filings, get_years, get_filers
 from summary import add_all_agency_year_summaries
 from transaction import add_all_filer_filer_id_transactions
@@ -46,16 +46,18 @@ class DataLoaderBox:
             [self.filer_select_drop_down, self.load_filer_transactions_button])
         self.layout = VBox([row_a, row_b, row_c, row_d])
 
+        self.agencies = Agencies()
+
         self.add_events()
         self.update_agency_select_drop_down()
 
     def on_load_agencies_button_clicked(self, b):
         print('on_load_agencies_button_clicked 1')
-        add_all_agencies()
+        self.agencies.add_all_agencies()
         self.update_agency_select_drop_down()
-      
+    
     def update_agency_select_drop_down(self):
-        agencies = get_all()
+        agencies = self.agencies.get_all()
         if len(agencies) < 1:
             return
 
