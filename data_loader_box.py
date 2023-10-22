@@ -3,7 +3,7 @@ from ipywidgets import HBox, VBox
 
 from src.netfile.agency.agencies import Agencies
 from src.netfile.filing.filings import Filings
-from summary import add_all_agency_year_summaries
+from src.netfile.summary.summary import add_all_agency_year_summaries
 from transaction import add_all_filer_filer_id_transactions
 
 

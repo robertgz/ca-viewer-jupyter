@@ -1,7 +1,7 @@
 from requests import exceptions
 import pandas as pd
 from typing import TypeAlias
-from summary_download import download_all_summaries_year_gen_func
+from .download import download_all_summaries_year_gen_func
 
 _summary_list = []
 
