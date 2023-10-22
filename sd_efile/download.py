@@ -19,8 +19,6 @@ def _get_data_from_url(year: str,  most_recent = True):
     json_response = request_download_url(year, most_recent)
     return json_response['data']
 
-def download_xlsx_year_to_file(filepath: str, url: str):
+def download_file(url: str):
     response = requests.get(url, timeout=20)
-    with open(filepath, 'wb') as file:
-        file.write(response.content)
-    return filepath    
+    return response.content
