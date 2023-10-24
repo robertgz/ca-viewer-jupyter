@@ -6,7 +6,6 @@ import pandas as pd
 
 from . import download as sd_download
 from . import file_storage as sd_file_storage
-from . import summaries as sd_summaries
 
 class Files:
     def __init__(self):
@@ -89,8 +88,27 @@ class Files:
         summaries = worksheet.to_dict('records')
         return summaries
     
+    @staticmethod
+    def summaries_to_common(summaries):
+        common_summaries = []
+        for summary in summaries:
+            common_summaries.append(
+                {
+                    'filer_local_id': None,
+                    'filer_id': summary['Filer_ID'],
+                    'filer_name': summary['Filer_NamL'],
+                    'filing_id': summary['e_filing_id'],
+                    "form_type": summary['Form_Type'],
+                    "line_item": summary['Line_Item'],
+                    "amount_a": summary['Amount_A'],
+                    "amount_b": summary['Amount_B'],
+                    "amount_c": summary['Amount_C'],
+                }
+            )
+        return common_summaries
+
     def get_common_year_summaries(self, year: str):
         summaries = self.get_year_summaries(year)
-        common_summaries = sd_summaries.convert_to_common(summaries)
+        common_summaries = self.summaries_to_common(summaries)
         return common_summaries
     
