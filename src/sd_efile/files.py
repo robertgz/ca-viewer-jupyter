@@ -89,11 +89,12 @@ class Files:
         return summaries
     
     @staticmethod
-    def summaries_to_common(summaries):
+    def summaries_to_common(agency_shortcut: str, summaries):
         common_summaries = []
         for summary in summaries:
             common_summaries.append(
                 {
+                    'agency_shortcut': agency_shortcut,
                     'filer_local_id': None,
                     'filer_id': summary['Filer_ID'],
                     'filer_name': summary['Filer_NamL'],
@@ -107,8 +108,8 @@ class Files:
             )
         return common_summaries
 
-    def get_common_year_summaries(self, year: str):
+    def get_summaries(self, agency_shortcut: str, year: str):
         summaries = self.get_year_summaries(year)
-        common_summaries = self.summaries_to_common(summaries)
+        common_summaries = self.summaries_to_common(agency_shortcut, summaries)
         return common_summaries
     
