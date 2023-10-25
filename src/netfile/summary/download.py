@@ -37,3 +37,14 @@ def download_all_summaries_year_gen_func(agencyShortcut: str, year: str):
 
         pageNumber += 1
         getNextPage = json['totalMatchingPages'] > pageNumber
+
+def get_by_agency_year(agency_shortcut: str, year: str):
+    summary_list = []
+    try:
+        for summaries in download_all_summaries_year_gen_func(agency_shortcut, year):
+            summary_list += summaries
+    except ResourceWarning as e:
+        print(e)
+    except requests.exceptions.Timeout as e:
+        print('SUMMARY: Warning slow response from provider. \nThis issue is usually temporary. Try again in a few minutes. ')
+    return summary_list
