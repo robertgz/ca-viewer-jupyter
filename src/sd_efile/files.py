@@ -4,9 +4,10 @@ from typing import List
 
 import pandas as pd
 
-from .xlsx_file import XLSXFile
 from . import download as sd_download
 from . import file_storage as sd_file_storage
+from .xlsx_file import XLSXFile
+from .efile_summary import EFileSummary
 
 class Files:
     def __init__(self):
@@ -81,33 +82,10 @@ class Files:
         return worksheet
     
     # Summaries
-    def get_year_summaries(self, year: str):
+    def get_summaries(self, agency_shortcut: str, year: str):
         worksheet = self.get_summary_worksheet(year)
         summaries = worksheet.to_dict('records')
-        return summaries
-    
-    @staticmethod
-    def summaries_to_common(agency_shortcut: str, summaries):
-        common_summaries = []
-        for summary in summaries:
-            common_summaries.append(
-                {
-                    'agency_shortcut': agency_shortcut,
-                    'filer_local_id': None,
-                    'filer_id': summary['Filer_ID'],
-                    'filer_name': summary['Filer_NamL'],
-                    'filing_id': summary['e_filing_id'],
-                    "form_type": summary['Form_Type'],
-                    "line_item": summary['Line_Item'],
-                    "amount_a": summary['Amount_A'],
-                    "amount_b": summary['Amount_B'],
-                    "amount_c": summary['Amount_C'],
-                }
-            )
+        print(summaries)
+        new_summaries = [EFileSummary(**summary) for summary in summaries]
+        common_summaries = [x.to_common(agency_shortcut) for x in new_summaries]
         return common_summaries
-
-    def get_summaries(self, agency_shortcut: str, year: str):
-        summaries = self.get_year_summaries(year)
-        common_summaries = self.summaries_to_common(agency_shortcut, summaries)
-        return common_summaries
-    
