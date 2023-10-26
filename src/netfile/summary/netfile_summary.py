@@ -18,8 +18,8 @@ class NetFileSummary():
     amount_C: float
     elec_Date: str
 
-    @staticmethod
-    def _get_year_from_summary(summary):
+    def _get_year(self):
+        summary = self
         year = None
         if len(summary.filingStartDate) > 0:
             year = summary.filingStartDate.partition('-')[0]
@@ -30,7 +30,7 @@ class NetFileSummary():
     def to_common(self, agency_shortcut: str):
         common_summary = {
             "agency_shortcut": agency_shortcut,            
-            "year": self._get_year_from_summary(self),
+            "year": self._get_year(),
             # Added fields above
 
             'filer_local_id': self.filerLocalId,
