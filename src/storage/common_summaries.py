@@ -1,4 +1,5 @@
 
+import pandas as pd
 from typing import List
 
 from .common_summary import CommonSummary
@@ -74,3 +75,8 @@ class CommonSummaries():
 
     def get_by_local_filer(self, filer_local_id: str):
         return [x for x in self.common_summaries if x.get_filer_local_id() == filer_local_id]
+
+    def get_filers_by_agency(self, agency_shortcut: str):
+        summaries = self.get_by_agency(agency_shortcut)
+        filers = [x.get_filer() for x in summaries]
+        return pd.DataFrame(filers).drop_duplicates().to_dict('records')

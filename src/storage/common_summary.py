@@ -26,6 +26,12 @@ class CommonSummary():
     def get_filer_id(self):
         return self.filer_id
 
+    def get_filer(self):
+        return {
+            'filer_id': self.filer_id,
+            'filer_name': self.filer_name,
+        }
+
     @staticmethod
     def is_filer_id_valid(filer_id: str):
         return filer_id.isdigit()
