@@ -1,15 +1,16 @@
 import os
-import sys
 import datetime
+from typing import List
 
 import pandas as pd
 
+from .xlsx_file import XLSXFile
 from . import download as sd_download
 from . import file_storage as sd_file_storage
 
 class Files:
     def __init__(self):
-        self.file_item_list = []
+        self.xlsx_files: List[XLSXFile] = []
 
     def get_list(self):
         return self.file_item_list
@@ -17,9 +18,9 @@ class Files:
     def init_years(self, agency_shortcut = 'CSD_EFILE'):
         year_limit = 2000
 
-        if (len(self.file_item_list) > 1):
+        if (len(self.xlsx_files) > 1):
             print('shared_lists NOT empty')
-            return self.file_item_list
+            return self.xlsx_files
 
         current_year = datetime.datetime.today().strftime('%Y')
         year = int(current_year)
@@ -29,40 +30,37 @@ class Files:
             json_response = sd_download.request_download_url(year)
 
             if 'success' in json_response:
-
-                self.file_item_list.append(
-                    {
-                        'agency_shortcut': agency_shortcut,
-                        'year': str(year),
-                        'filename': (json_response['data']).split('/')[-1],
-                        'url': json_response['data'],
-                    }
-                )
+                file_info = {
+                    'agency_shortcut': agency_shortcut,
+                    'year': str(year),
+                    'filename': (json_response['data']).split('/')[-1],
+                    'url': json_response['data'],
+                }
+                self.xlsx_files.append(XLSXFile(**file_info))
             else:
                 year_found = False
             year -= 1
 
-        return self.file_item_list
+        return self.xlsx_files
 
     def get_years(self):
-        return list(map(lambda x: x['year'], self.file_item_list))
+        return [x.get_year() for x in self.xlsx_files]
 
     def get_file_item(self, year: str):
-        if len(self.file_item_list) < 1:
+        if len(self.xlsx_files) < 1:
             print('run init_years() first')
             raise UserWarning('Exit Early')
             return
 
-        filtered_file_items = list(filter(lambda x: x['year'] == year, self.file_item_list))
-        return filtered_file_items[0]
+        return next(x for x in self.xlsx_files if x.get_year() == year)
 
     def get_file_path(self, year: str):
         file_item = self.get_file_item(year)
         local_path = sd_file_storage.get_local_download_path()
 
-        filepath = os.path.join(local_path, file_item['filename'])
+        filepath = os.path.join(local_path, file_item.get_filename())
 
-        sd_file_storage.conditionally_download(filepath, file_item['url'])
+        sd_file_storage.conditionally_download(filepath, file_item.get_url())
         return filepath
 
     # Workbook
