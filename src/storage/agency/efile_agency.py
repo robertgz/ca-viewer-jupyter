@@ -20,5 +20,5 @@ class EFileAgency(BaseAgency):
 
     @staticmethod
     def get_agencies():
-        CSD = EFileAgency(agency_shortcut = 'CSD_2014+', name = 'San Diego, City of')
+        CSD = EFileAgency(agency_shortcut = 'CSD_new', name = 'San Diego, City of (2014-)')
         return [CSD]
