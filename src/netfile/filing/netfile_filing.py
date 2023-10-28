@@ -23,8 +23,11 @@ class NetFileFiling():
         try:
             return self.title.partition(' (')[2].partition('-')[0].strip().split('/')[2]
         except Exception as e:
-            print(f'Title not able to be parsed: {self.title}, id: {self.id}')
-            return None
+            try:
+                return self.title.partition(' (')[2].partition('-')[2].strip().split('/')[2].strip(')')
+            except Exception as e:
+                print(f'Title not able to be parsed for year: {self.title}, id: {self.id}')
+                return None
 
     @staticmethod
     def get_filings(agency_shortcut: str):
