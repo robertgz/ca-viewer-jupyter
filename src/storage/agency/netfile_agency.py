@@ -23,7 +23,13 @@ class NetFileAgency(BaseAgency):
             print('filings empty')
             self.filings = NetFileFiling.get_filings(self.get_agency_shortcut())
         
-        return sorted(list(set([x.get_year() for x in self.filings])), reverse=True)
+        years = [x.get_year() for x in self.filings]
+
+        # Only keep valid years
+        years = [x for x in years if x]
+
+        # Remove duplicate years with set
+        return sorted(list(set(years)), reverse=True)
 
     @staticmethod
     def get_agencies():
