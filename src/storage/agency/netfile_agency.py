@@ -1,14 +1,16 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
 from .base_agency import BaseAgency
 from src.netfile.agency.download import download_agencies as net_file_agency_download
+from src.netfile.filing.netfile_filing import NetFileFiling
 
 @dataclass(kw_only=True)
 class NetFileAgency(BaseAgency):
     id: int
     shortcut: str
     name: str
+    filings: List[NetFileFiling] = field(default_factory=list[NetFileFiling])
 
     def get_name(self):
         return self.name
@@ -16,9 +18,12 @@ class NetFileAgency(BaseAgency):
     def get_agency_shortcut(self):
         return self.shortcut
 
-    # def get_years() -> List[str]:
-    # loads and saves agencies into class to get years
-    #     pass
+    def get_years(self) -> List[str]:
+        if (len(self.filings) < 1):
+            print('filings empty')
+            self.filings = NetFileFiling.get_filings(self.get_agency_shortcut())
+        
+        return sorted(list(set([x.get_year() for x in self.filings])), reverse=True)
 
     @staticmethod
     def get_agencies():
