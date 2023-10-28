@@ -24,10 +24,10 @@ class NetFileDownloadedFilingResponse(TypedDict):
     totalMatchingPages: int
 
 # function to request a page of filings from NetFile
-def get_filings(agencyShortcut: str, page=0) -> NetFileDownloadedFilingResponse:
+def get_filings(agency_shortcut: str, page=0) -> NetFileDownloadedFilingResponse:
     filing_url = 'https://www.netfile.com/Connect2/api/public/list/filing'
     payload = {
-        "AID": agencyShortcut,
+        "AID": agency_shortcut,
         "Application": "Campaign",
         "CurrentPageIndex": page,
         # Form 30 is for FPPC 460 
@@ -43,12 +43,12 @@ def get_filings(agencyShortcut: str, page=0) -> NetFileDownloadedFilingResponse:
     return response.json()
 
 # generator function to get each page of filings for an agency
-def download_all_filings_gen_func(agencyShortcut: str):
+def download_all_filings_gen_func(agency_shortcut: str):
     pageNumber = 0
     getNextPage = True
 
     while getNextPage:
-        json = get_filings(agencyShortcut, pageNumber)
+        json = get_filings(agency_shortcut, pageNumber)
         if (len(json['filings']) < 1):
             return
 
@@ -57,14 +57,12 @@ def download_all_filings_gen_func(agencyShortcut: str):
         pageNumber += 1
         getNextPage = json['totalMatchingPages'] > pageNumber
 
-# function to get all pages of filings for an agency
-# @deprecated('use filings.add_all_agency_filings')
-def get_all_agency_filings(agencyShortcut: str):
+def get_all_agency_filings(agency_shortcut: str) -> list[NetFileDownloadedFiling]:
     filing_list = []
     try:
-        for filings in download_all_filings_gen_func(agencyShortcut):
+        for filings in download_all_filings_gen_func(agency_shortcut):
             filing_list += filings
         return filing_list
-    except requests.exceptions.Timeout as e:
+    except (requests.exceptions.Timeout, ConnectionError) as e:
         print('FILING:: Warning slow response from provider. \nThis issue is usually temporary. Try again in a few minutes. ')
         return []
