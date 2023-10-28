@@ -9,7 +9,7 @@ class NetFileDownloadedAgency(TypedDict):
     name: str
 
 class NetFileDownloadedAgencyResponse(TypedDict):
-    agencies: NetFileDownloadedAgency
+    agencies: list[NetFileDownloadedAgency]
     responseStatus: Optional[NetFileResponseStatus]
 
 agencies_url = 'https://www.netfile.com/Connect2/api/public/campaign/agencies.json'
