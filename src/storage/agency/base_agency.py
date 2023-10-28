@@ -10,7 +10,7 @@ class BaseAgency:
     def get_agency_shortcut() -> str:
         pass
 
-    # def get_years() -> List(str):
+    # def get_years() -> List[str]:
     #     pass
 
     @staticmethod

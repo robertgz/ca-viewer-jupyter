@@ -16,7 +16,7 @@ class NetFileAgency(BaseAgency):
     def get_agency_shortcut(self):
         return self.shortcut
 
-    # def get_years() -> List(str):
+    # def get_years() -> List[str]:
     # loads and saves agencies into class to get years
     #     pass
 
