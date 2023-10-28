@@ -1,7 +1,30 @@
 import requests
+from typing import TypedDict, Optional
+
+from ..response_status_type import NetFileResponseStatus
+
+class NetFileDownloadedFiling(TypedDict):
+    id: str
+    agency: int
+    isEfiled: bool
+    hasImage: bool
+    filingDate: str
+    title: str
+    form: int
+    filerName: str
+    filerLocalId: str
+    filerStateId: str
+    amendmentSequenceNumber: int
+    amendedFilingId: str
+
+class NetFileDownloadedFilingResponse(TypedDict):
+    filings: list[NetFileDownloadedFiling]
+    responseStatus: Optional[NetFileResponseStatus]
+    totalMatchingCount: int
+    totalMatchingPages: int
 
 # function to request a page of filings from NetFile
-def get_filings(agencyShortcut: str, page=0):
+def get_filings(agencyShortcut: str, page=0) -> NetFileDownloadedFilingResponse:
     filing_url = 'https://www.netfile.com/Connect2/api/public/list/filing'
     payload = {
         "AID": agencyShortcut,
