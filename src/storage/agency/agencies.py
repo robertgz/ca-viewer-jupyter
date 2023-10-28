@@ -22,6 +22,8 @@ class Agencies:
             self.common_agencies.extend(e_file_agencies)
             self.e_file_agencies_loaded = True
 
-    def getAgencies(self):
-        pass
+    def get_agencies(self):
+        if not self.net_file_agencies_loaded or not self.e_file_agencies_loaded:
+            self.add_agencies()
+        return self.common_agencies
     
