@@ -1,6 +1,9 @@
+import os
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
+from typing import List, ClassVar
+
+import pandas as pd
 
 from . import download as sd_download
 
@@ -11,6 +14,8 @@ class XLSXFile():
     filename: str
     url: str
 
+    sub_directory: ClassVar[str] = 'downloads'
+
     def get_year(self):
         return self.year
 
@@ -19,6 +24,13 @@ class XLSXFile():
 
     def get_url(self):
         return self.url
+    
+    def get_workbook(self):
+        filepath = os.path.join(XLSXFile.get_local_download_path(), self.filename)
+        if not os.path.isfile(filepath):
+            XLSXFile.download_file(filepath, self.url)
+
+        return pd.ExcelFile(filepath) # need to wrap this in a Workbook class
 
     @staticmethod
     def init_years(agency_shortcut: str):
@@ -44,3 +56,18 @@ class XLSXFile():
 
         return xlsx_files
         
+    @staticmethod
+    def get_local_download_path():
+        dirname = os.path.dirname(__file__)
+        return os.path.join(dirname, XLSXFile.sub_directory)
+    
+    @staticmethod
+    def download_file(filepath: str, url: str):
+        download_path = XLSXFile.get_local_download_path()
+        if not os.path.exists(download_path):
+            os.makedirs(download_path)
+
+        file_data = sd_download.download_file(url)
+        with open(filepath, 'wb') as file:
+            file.write(file_data)
+    
