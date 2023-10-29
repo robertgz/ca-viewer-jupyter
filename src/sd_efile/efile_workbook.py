@@ -4,8 +4,8 @@ class EFileWorkbook():
     def __init__(self, filepath):
         self.workbook = pd.ExcelFile(filepath)
 
-    def get_filers(self):
-        converter = {col: str for col in ['Filer_ID']}
-        df = self.workbook.parse(
-            'F460-Summary', converters=converter).filter(items=['Filer_ID', 'Filer_NamL'])
-        return df.drop_duplicates().to_dict('records')
+    def get_sheet_Names(self):
+        return self.workbook.sheet_names
+
+    def get_summary_data_frame(self, converter) -> pd.DataFrame:
+        return self.workbook.parse('F460-Summary', converters=converter)
