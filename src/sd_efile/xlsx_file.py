@@ -3,9 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List, ClassVar
 
-import pandas as pd
-
 from . import download as sd_download
+from src.sd_efile.efile_workbook import EFileWorkbook
 
 @dataclass
 class XLSXFile():
@@ -30,7 +29,7 @@ class XLSXFile():
         if not os.path.isfile(filepath):
             XLSXFile.download_file(filepath, self.url)
 
-        return pd.ExcelFile(filepath) # need to wrap this in a Workbook class
+        return EFileWorkbook(filepath)
 
     @staticmethod
     def init_years(agency_shortcut: str):
