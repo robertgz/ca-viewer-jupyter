@@ -19,13 +19,15 @@ class EFileAgency(BaseAgency):
     def get_agency_shortcut(self):
         return self.agency_shortcut
     
-    def populate_files(self):
-        if (len(self.xlsx_file_metadata) < 1):
-            print('files empty')
+    def _load_file_metadata(self, force=False):
+        if len(self.xlsx_file_metadata) < 1 or force:
+            print('Getting file metadata')
             self.xlsx_file_metadata = XLSXFile.init_years(self.agency_shortcut)
 
+    def load_years(self, force=False):
+        self._load_file_metadata(force)
+
     def get_years(self) -> List[str]:
-        self.populate_files()
         return [x.get_year() for x in self.xlsx_file_metadata]
 
     def _get_filers_for_year(self, year: str) -> pd.DataFrame:
@@ -34,12 +36,12 @@ class EFileAgency(BaseAgency):
         return file.get_workbook().get_summary_data_frame(converter)
 
     def get_filers_by_year(self, year: str):
-        self.populate_files()    
+        self._load_file_metadata()    
         filers_df = self._get_filers_for_year(year)
         return EFileFiler.get_filers(filers_df)
 
     def get_filers(self):
-        self.populate_files()
+        self._load_file_metadata()
         filers_dfs = [self._get_filers_for_year(year) for year in self.get_years()]
         filers = pd.concat(filers_dfs)
         return EFileFiler.get_filers(filers)

@@ -10,6 +10,9 @@ class BaseAgency:
     def get_agency_shortcut() -> str:
         pass
 
+    def load_years():
+        pass
+
     def get_years() -> List[str]:
         pass
 

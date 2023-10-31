@@ -17,12 +17,16 @@ class NetFileAgency(BaseAgency):
 
     def get_agency_shortcut(self):
         return self.shortcut
-
-    def get_years(self) -> List[str]:
-        if (len(self.filings) < 1):
-            print('filings empty')
+    
+    def load_filings(self, force=False):
+        if len(self.filings) < 1 or force:
+            print('Loading filings for agency {self.name} ...')
             self.filings = NetFileFiling.get_filings(self.get_agency_shortcut())
-        
+
+    def load_years(self, force=False):
+        self.load_filings(force)
+
+    def get_years(self) -> List[str]:       
         years = [x.get_year() for x in self.filings]
 
         # Only keep valid years
