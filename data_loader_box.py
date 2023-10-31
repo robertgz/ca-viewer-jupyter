@@ -16,6 +16,10 @@ class DataLoaderBox:
             description='Agency',
             disabled=True,
         )
+        self.load_years_button = widgets.Button(
+            description="Load Years",
+            disabled=True
+        )
         self.load_filings_button = widgets.Button(
             description="Load Filings",
             disabled=True
@@ -39,7 +43,7 @@ class DataLoaderBox:
 
         row_a = HBox([self.load_agencies_button])
         row_b = HBox(
-            [self.agency_select_drop_down, self.load_filings_button])
+            [self.agency_select_drop_down, self.load_filings_button, self.load_years_button])
         row_c = HBox(
             [self.filing_years_select_drop_down, self.load_agency_summaries_button])
         row_d = HBox(
@@ -73,6 +77,7 @@ class DataLoaderBox:
 
     def on_agency_select_changed(self, change):
         self.load_filings_button.disabled = (change.new == 'none')
+        self.load_years_button.disabled = (change.new == 'none')
         self.update_year_select_drop_down(change.new)
         self.update_filer_select_drop_down(change.new)
 
@@ -82,7 +87,13 @@ class DataLoaderBox:
         self.filings.add_all_agency_filings(agency_shortcut)
         self.update_year_select_drop_down(agency_shortcut)
         self.update_filer_select_drop_down(agency_shortcut)
-        
+
+    def on_load_years_button_clicked(self, b):
+        agency_shortcut = self.agency_select_drop_down.value
+        #  load years
+        self.update_year_select_drop_down(agency_shortcut)
+        self.update_filer_select_drop_down(agency_shortcut)
+
     def update_year_select_drop_down(self, agency_shortcut):
         if (agency_shortcut == 'none'):
             return
@@ -142,6 +153,7 @@ class DataLoaderBox:
         self.load_agencies_button.on_click(self.on_load_agencies_button_clicked)
         self.agency_select_drop_down.observe(self.on_agency_select_changed, 'value')
         self.load_filings_button.on_click(self.on_load_filings_button_clicked)
+        self.load_years_button.on_click(self.on_load_years_button_clicked)
         self.filing_years_select_drop_down.observe(self.on_filing_years_select_changed, 'value')
         self.load_agency_summaries_button.on_click(self.on_load_agency_summaries_button_clicked)
         self.filer_select_drop_down.observe(self.on_filer_select_changed, 'value')
