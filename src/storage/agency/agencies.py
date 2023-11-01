@@ -22,8 +22,9 @@ class Agencies:
             self.common_agencies.extend(e_file_agencies)
             self.e_file_agencies_loaded = True
 
-    def get_agencies(self):
-        if not self.net_file_agencies_loaded or not self.e_file_agencies_loaded:
+    def load_agencies(self, force=False):
+        if not self.net_file_agencies_loaded or not self.e_file_agencies_loaded or force:
             self.add_agencies()
+
+    def get_agencies(self):
         return self.common_agencies
-    
