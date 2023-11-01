@@ -24,7 +24,7 @@ class NetFileDownloadedFilingResponse(TypedDict):
     totalMatchingPages: int
 
 # function to request a page of filings from NetFile
-def get_filings(agency_shortcut: str, page=0) -> NetFileDownloadedFilingResponse:
+def get_filings(agency_shortcut: str, page=0, form=30) -> NetFileDownloadedFilingResponse:
     filing_url = 'https://www.netfile.com/Connect2/api/public/list/filing'
     payload = {
         "AID": agency_shortcut,
@@ -32,7 +32,7 @@ def get_filings(agency_shortcut: str, page=0) -> NetFileDownloadedFilingResponse
         "CurrentPageIndex": page,
         # Form 30 is for FPPC 460 
         # FPPC 460 forms should be the only forms that have summaries
-        "Form": 30,
+        "Form": form,
         'PageSize': '1000',
         "format": "json",
     }
@@ -43,12 +43,12 @@ def get_filings(agency_shortcut: str, page=0) -> NetFileDownloadedFilingResponse
     return response.json()
 
 # generator function to get each page of filings for an agency
-def download_all_filings_gen_func(agency_shortcut: str):
+def download_all_filings_gen_func(agency_shortcut: str, form=30):
     pageNumber = 0
     getNextPage = True
 
     while getNextPage:
-        json = get_filings(agency_shortcut, pageNumber)
+        json = get_filings(agency_shortcut, pageNumber, form)
         if (len(json['filings']) < 1):
             return
 
@@ -57,10 +57,10 @@ def download_all_filings_gen_func(agency_shortcut: str):
         pageNumber += 1
         getNextPage = json['totalMatchingPages'] > pageNumber
 
-def get_all_agency_filings(agency_shortcut: str) -> list[NetFileDownloadedFiling]:
+def get_all_agency_filings(agency_shortcut: str, form=30) -> list[NetFileDownloadedFiling]:
     filing_list = []
     try:
-        for filings in download_all_filings_gen_func(agency_shortcut):
+        for filings in download_all_filings_gen_func(agency_shortcut, form):
             filing_list += filings
         return filing_list
     except (requests.exceptions.Timeout, ConnectionError) as e:
