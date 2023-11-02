@@ -48,3 +48,15 @@ class NetFileFiling():
         filtered_filings = [x for x in net_file_filings if x.isEfiled == True]
 
         return filtered_filings
+
+    @staticmethod
+    def download_filings_460(agency_shortcut: str):
+        return NetFileFiling.get_filings(agency_shortcut, form=Form.FORM_460.value)
+
+    @staticmethod
+    def download_filings_496(agency_shortcut: str):
+        return NetFileFiling.get_filings(agency_shortcut, form=Form.FORM_496.value)
+
+    @staticmethod
+    def download_filings_497(agency_shortcut: str):
+        return NetFileFiling.get_filings(agency_shortcut, form=Form.FORM_497.value)
