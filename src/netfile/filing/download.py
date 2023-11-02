@@ -24,7 +24,7 @@ class NetFileDownloadedFilingResponse(TypedDict):
     totalMatchingPages: int
 
 # function to request a page of filings from NetFile
-def get_filings(agency_shortcut: str, page=0, form=30) -> NetFileDownloadedFilingResponse:
+def get_filings(agency_shortcut: str, page=0, form=None) -> NetFileDownloadedFilingResponse:
     filing_url = 'https://www.netfile.com/Connect2/api/public/list/filing'
     payload = {
         "AID": agency_shortcut,
@@ -43,7 +43,7 @@ def get_filings(agency_shortcut: str, page=0, form=30) -> NetFileDownloadedFilin
     return response.json()
 
 # generator function to get each page of filings for an agency
-def download_all_filings_gen_func(agency_shortcut: str, form=30):
+def download_all_filings_gen_func(agency_shortcut: str, form=None):
     pageNumber = 0
     getNextPage = True
 
@@ -57,7 +57,7 @@ def download_all_filings_gen_func(agency_shortcut: str, form=30):
         pageNumber += 1
         getNextPage = json['totalMatchingPages'] > pageNumber
 
-def get_all_agency_filings(agency_shortcut: str, form=30) -> list[NetFileDownloadedFiling]:
+def get_all_agency_filings(agency_shortcut: str, form=None) -> list[NetFileDownloadedFiling]:
     filing_list = []
     try:
         for filings in download_all_filings_gen_func(agency_shortcut, form):
