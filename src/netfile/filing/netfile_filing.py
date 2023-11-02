@@ -1,8 +1,18 @@
 
+from enum import Enum
 from dataclasses import dataclass
 import pandas as pd
 
 from src.netfile.filing.download import get_all_agency_filings
+
+class Form(Enum):
+    FORM_450 = 29 # Recipient Committee Campaign Statement – Short Form
+    FORM_460 = 30 # Recipient Committee Campaign Statement
+    FORM_461 = 31 # Major Donor and Independent Expenditure Committee Campaign Statement
+    FORM_465 = 32 # Supplemental Independent Expenditure Report
+    FORM_496 = 36 # Independent Expenditure Report
+    FORM_497LCM = 38 # Contribution Report
+    FORM_497 = 39 # Contribution Report
 
 @dataclass(kw_only=True)
 class NetFileFiling():
@@ -30,8 +40,8 @@ class NetFileFiling():
                 return None
 
     @staticmethod
-    def get_filings(agency_shortcut: str):
-        filings = get_all_agency_filings(agency_shortcut) 
+    def get_filings(agency_shortcut: str, form=Form.FORM_460.value):
+        filings = get_all_agency_filings(agency_shortcut, form) 
         unique_filings = pd.DataFrame(filings).drop_duplicates().to_dict('records')
         net_file_filings = [NetFileFiling(**filing) for filing in unique_filings]
 
