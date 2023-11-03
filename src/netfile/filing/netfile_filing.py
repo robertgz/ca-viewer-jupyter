@@ -49,6 +49,9 @@ class NetFileFiling():
             print(f'Title not able to be parsed for year: {self.title}, id: {self.id}')
             return None
 
+    def export_filer(self):
+        return {'id':self.filerLocalId, 'name': self.filerName}
+
     @staticmethod
     def get_filings(agency_shortcut: str, form=Form.FORM_460.value):
         filings = get_all_agency_filings(agency_shortcut, form) 
