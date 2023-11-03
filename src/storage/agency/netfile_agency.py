@@ -1,9 +1,11 @@
 from dataclasses import dataclass, field
 from typing import List
 
+import pandas as pd
+
 from .base_agency import BaseAgency
 from src.netfile.agency.download import download_agencies as net_file_agency_download
-from src.netfile.filing.netfile_filing import NetFileFiling
+from src.netfile.filing.netfile_filing import NetFileFiling, Form
 
 @dataclass(kw_only=True)
 class NetFileAgency(BaseAgency):
@@ -34,6 +36,31 @@ class NetFileAgency(BaseAgency):
 
         # Remove duplicate years with set
         return sorted(list(set(years)), reverse=True)
+
+    def _export_filers(self, year: str = None, form: Form = None):
+        filings = self._filings
+
+        if year:
+            filings = [x for x in filings if x.get_year() == year]
+        
+        if form:
+            filings = [x for x in filings if x.form == form.value]
+            
+        filers = [x.export_filer() for x in filings]
+        unique_filers = pd.DataFrame(filers).drop_duplicates().to_dict('records')
+        return unique_filers
+
+    def get_filers_460(self, year: str = None):
+        self.load_filings()
+        return self._export_filers(year, Form.FORM_460)
+        
+    def get_filers_496(self, year: str = None):
+        self.load_filings()
+        return self._export_filers(year, Form.FORM_496)
+
+    def get_filers_497(self, year: str = None):
+        self.load_filings()
+        return self._export_filers(year, Form.FORM_497)
 
     @staticmethod
     def get_agencies():
