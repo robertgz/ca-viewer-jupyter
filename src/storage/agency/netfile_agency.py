@@ -10,7 +10,7 @@ class NetFileAgency(BaseAgency):
     id: int
     shortcut: str
     name: str
-    filings: List[NetFileFiling] = field(default_factory=list[NetFileFiling])
+    _filings: List[NetFileFiling] = field(default_factory=list[NetFileFiling])
 
     def get_name(self):
         return self.name
@@ -19,15 +19,15 @@ class NetFileAgency(BaseAgency):
         return self.shortcut
     
     def load_filings(self, force=False):
-        if len(self.filings) < 1 or force:
-            print('Loading filings for agency {self.name} ...')
-            self.filings = NetFileFiling.get_filings(self.get_agency_shortcut())
+        if len(self._filings) < 1 or force:
+            print(f'Loading filings for agency {self.name} ...')
+            self._filings = NetFileFiling.get_filings(self.shortcut)       
 
     def load_years(self, force=False):
         self.load_filings(force)
 
     def get_years(self) -> List[str]:       
-        years = [x.get_year() for x in self.filings]
+        years = [x.get_year() for x in self._filings]
 
         # Only keep valid years
         years = [x for x in years if x]
