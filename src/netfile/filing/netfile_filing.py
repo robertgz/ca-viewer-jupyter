@@ -53,14 +53,16 @@ class NetFileFiling():
         return {'id':self.filerLocalId, 'name': self.filerName}
 
     @staticmethod
-    def get_filings(agency_shortcut: str, form=Form.FORM_460.value):
-        filings = get_all_agency_filings(agency_shortcut, form) 
+    def get_filings(agency_shortcut: str):
+
+        filings = []
+        for form in Form:
+            filings.extend(get_all_agency_filings(agency_shortcut, form.value))
+
         unique_filings = pd.DataFrame(filings).drop_duplicates().to_dict('records')
         net_file_filings = [NetFileFiling(**filing) for filing in unique_filings]
 
-        filtered_filings = [x for x in net_file_filings if x.isEfiled == True]
-
-        return filtered_filings
+        return [x for x in net_file_filings if x.isEfiled == True]
 
     @staticmethod
     def download_filings_460(agency_shortcut: str):
