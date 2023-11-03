@@ -31,13 +31,23 @@ class NetFileFiling():
 
     def get_year(self):
         try:
-            return self.title.partition(' (')[2].partition('-')[0].strip().split('/')[2]
-        except Exception as e:
-            try:
-                return self.title.partition(' (')[2].partition('-')[2].strip().split('/')[2].strip(')')
-            except Exception as e:
-                print(f'Title not able to be parsed for year: {self.title}, id: {self.id}')
+            date_range = self.title.partition(' (')[2].strip(')').strip()
+            if len(date_range) < 1: # no date found
                 return None
+            
+            if '-' not in date_range: # parse year from one date
+                return date_range.split('/')[2]
+            
+            if '-' in date_range: # split into multiple dates
+                dates = date_range.partition('-')
+                if dates[0]: # parse year from first date
+                    return dates[0].split('/')[2].strip()
+                elif dates[2]: # parse year from second date
+                    return dates[2].split('/')[2].strip()
+        
+        except Exception as e:
+            print(f'Title not able to be parsed for year: {self.title}, id: {self.id}')
+            return None
 
     @staticmethod
     def get_filings(agency_shortcut: str, form=Form.FORM_460.value):
